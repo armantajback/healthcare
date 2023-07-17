@@ -1,47 +1,38 @@
-# Copyright 2019 Google LLC
+# Copyright 2023 Google LLC
 #
-# Licensed under the Apache License, Version 2.0 (the 'License');
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     https://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an 'AS IS' BASIS,
+# distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# ==============================================================================
 """Tests for dicom_json.py."""
-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 from absl.testing import absltest
 from absl.testing import parameterized
-import frozendict
-
 from hcls_imaging_ml_toolkit import dicom_json
 from hcls_imaging_ml_toolkit import tags
 
 
-_DICOM_JSON = frozendict.frozendict({
-    tags.PATIENT_AGE.number: {
-        'vr': tags.PATIENT_AGE.vr,
-        'Value': ['049Y']
-    },
+_DICOM_JSON = {
+    tags.PATIENT_AGE.number: {'vr': tags.PATIENT_AGE.vr, 'Value': ['049Y']},
     tags.SPECIFIC_CHARACTER_SET.number: {
         'vr': tags.SPECIFIC_CHARACTER_SET.vr,  # Missing 'Value' key.
     },
     tags.WINDOW_WIDTH.number: {
         'vr': tags.WINDOW_WIDTH.vr,
-        'Value': []  # 'Value' key maps to empty list.
+        'Value': [],  # 'Value' key maps to empty list.
     },
     tags.PATIENT_COMMENTS.number: {
         'vr': tags.PATIENT_COMMENTS.vr,
-        'Value': ['abc', 'def', 'ghi']
+        'Value': ['abc', 'def', 'ghi'],
     },
-})
+}
 
 
 class DicomJsonTest(parameterized.TestCase):
@@ -81,7 +72,8 @@ class DicomJsonTest(parameterized.TestCase):
     bulkdata = dicom_json.DicomBulkData(
         uri='uri',
         data=bytearray('image_array', encoding='utf8'),
-        content_type='type')
+        content_type='type',
+    )
     bulkdata_list = [bulkdata]
     dicom_object = dicom_json.ObjectWithBulkData(dicom_dict, bulkdata_list)
 

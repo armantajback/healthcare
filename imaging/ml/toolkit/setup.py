@@ -17,37 +17,27 @@ from setuptools import find_packages
 from setuptools import setup
 
 REQUIRED_PACKAGES = [
-    'attrs',
-    'google-auth',
-    'retrying',
-    # Typing is not needed for Python versions 3.5+
-    'typing',
-    'httplib2',
-    'requests-toolbelt',
-    'six',
-    'urllib3',
-    'google-auth-httplib2',
-    'google-api-python-client',
-    'tensorflow',
-    'google-api-core',
-    'google-cloud-pubsub',
     'absl-py',
+    'google-auth-httplib2',
+    'httplib2',
+    'urllib3',
+    'retrying',
+    'requests-toolbelt',
     'numpy',
-    # Mock is not needed for Python versions 3.3+
     'mock',
-    'grpcio',
-    'tensorflow-serving-api',
+    'google-auth',
+    'attrs',
 ]
 
 setup(
-    name='hcls_imaging_ml_toolkit',
-    version='0.1',
+    name='hcls_imaging_ml_toolkit_ez_wsi',
+    version='1.0.0',
     install_requires=REQUIRED_PACKAGES,
     python_requires='>=3',
     packages=find_packages(),
     author='Google',
     author_email='noreply@google.com',
     license='Apache 2.0',
-    url='https://github.com/GoogleCloudPlatform/healthcare',
-    description='Toolkit for deploying ML models on GCP leveraging Google Cloud Healthcare API.'
+    url='https://github.com/armantajback/healthcare',
+    description='Fork of Toolkit for deploying ML models on GCP leveraging Google Cloud Healthcare API.'
 )

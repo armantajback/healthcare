@@ -1,25 +1,21 @@
-# Copyright 2019 Google LLC.
+# Copyright 2023 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# ==============================================================================
 """Tests for dicom_path.py."""
-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 from absl.testing import absltest
 from absl.testing import parameterized
-
 from hcls_imaging_ml_toolkit import dicom_path
 from hcls_imaging_ml_toolkit import test_dicom_path_util as tdpu
 
@@ -91,27 +87,51 @@ class DicomPathTest(parameterized.TestCase):
   @parameterized.parameters('/', '@')
   def testNoForwardSlashOrAt(self, illegal_char):
     """ValueError is raised when an attribute contains '/' or '@'."""
-    self.assertRaises(ValueError, dicom_path.Path, 'project%cid' % illegal_char,
-                      'l', 'd', 's')
-    self.assertRaises(ValueError, dicom_path.Path, 'p',
-                      'locat%cion' % illegal_char, 'd', 's')
-    self.assertRaises(ValueError, dicom_path.Path, 'p', 'l',
-                      'data%cset' % illegal_char, 's')
-    self.assertRaises(ValueError, dicom_path.Path, 'p', 'l', 'd',
-                      'st%core' % illegal_char)
-    self.assertRaises(ValueError, dicom_path.Path, 'p', 'l', 'd', 's',
-                      '1.2%c3' % illegal_char)
-    self.assertRaises(ValueError, dicom_path.Path, 'p', 'l', 'd', 's', '1.2.3',
-                      '4.5%c6' % illegal_char)
-    self.assertRaises(ValueError, dicom_path.Path, 'p', 'l', 'd', 's', '1.2.3',
-                      '4.5.6', '7.8%c9' % illegal_char)
+    self.assertRaises(
+        ValueError, dicom_path.Path, 'project%cid' % illegal_char, 'l', 'd', 's'
+    )
+    self.assertRaises(
+        ValueError, dicom_path.Path, 'p', 'locat%cion' % illegal_char, 'd', 's'
+    )
+    self.assertRaises(
+        ValueError, dicom_path.Path, 'p', 'l', 'data%cset' % illegal_char, 's'
+    )
+    self.assertRaises(
+        ValueError, dicom_path.Path, 'p', 'l', 'd', 'st%core' % illegal_char
+    )
+    self.assertRaises(
+        ValueError, dicom_path.Path, 'p', 'l', 'd', 's', '1.2%c3' % illegal_char
+    )
+    self.assertRaises(
+        ValueError,
+        dicom_path.Path,
+        'p',
+        'l',
+        'd',
+        's',
+        '1.2.3',
+        '4.5%c6' % illegal_char,
+    )
+    self.assertRaises(
+        ValueError,
+        dicom_path.Path,
+        'p',
+        'l',
+        'd',
+        's',
+        '1.2.3',
+        '4.5.6',
+        '7.8%c9' % illegal_char,
+    )
 
   def testUidMissingError(self):
     """ValueError is raised when an expected UID is missing."""
-    self.assertRaises(ValueError, dicom_path.Path, 'p', 'l', 'd', 's', None,
-                      '4.5.6')
-    self.assertRaises(ValueError, dicom_path.Path, 'p', 'l', 'd', 's', 'stuid',
-                      None, '7.8.9')
+    self.assertRaises(
+        ValueError, dicom_path.Path, 'p', 'l', 'd', 's', None, '4.5.6'
+    )
+    self.assertRaises(
+        ValueError, dicom_path.Path, 'p', 'l', 'd', 's', 'stuid', None, '7.8.9'
+    )
 
   def testFromStringInvalid(self):
     """ValueError raised when the path string is invalid."""
@@ -121,17 +141,21 @@ class DicomPathTest(parameterized.TestCase):
     """ValueError raised when the expected type doesn't match the actual one."""
     for path_type in dicom_path.Type:
       if path_type != dicom_path.Type.STORE:
-        self.assertRaises(ValueError, dicom_path.FromString,
-                          tdpu.STORE_PATH_STR, path_type)
+        self.assertRaises(
+            ValueError, dicom_path.FromString, tdpu.STORE_PATH_STR, path_type
+        )
       if path_type != dicom_path.Type.STUDY:
-        self.assertRaises(ValueError, dicom_path.FromString,
-                          tdpu.STUDY_PATH_STR, path_type)
+        self.assertRaises(
+            ValueError, dicom_path.FromString, tdpu.STUDY_PATH_STR, path_type
+        )
       if path_type != dicom_path.Type.SERIES:
-        self.assertRaises(ValueError, dicom_path.FromString,
-                          tdpu.SERIES_PATH_STR, path_type)
+        self.assertRaises(
+            ValueError, dicom_path.FromString, tdpu.SERIES_PATH_STR, path_type
+        )
       if path_type != dicom_path.Type.INSTANCE:
-        self.assertRaises(ValueError, dicom_path.FromString,
-                          tdpu.INSTANCE_PATH_STR, path_type)
+        self.assertRaises(
+            ValueError, dicom_path.FromString, tdpu.INSTANCE_PATH_STR, path_type
+        )
 
 
 if __name__ == '__main__':

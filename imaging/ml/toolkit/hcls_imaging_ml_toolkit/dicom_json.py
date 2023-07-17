@@ -1,32 +1,28 @@
-# Copyright 2019 Google LLC
+# Copyright 2023 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     https://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# ==============================================================================
 """Utilities for manipulating DICOM JSON."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
-from typing import Any, Dict, List, Optional, Text
-import attr
-
+import dataclasses
+from typing import Any, Dict, List, Optional
 from hcls_imaging_ml_toolkit import tags
 
 # The key used for values in DICOM JSON.
 _VALUE_KEY = 'Value'
 
 
-def Insert(dicom_json: Dict[Text, Any], tag: tags.DicomTag, value: Any) -> None:
+def Insert(dicom_json: Dict[str, Any], tag: tags.DicomTag, value: Any) -> None:
   """Inserts a Dicom Tag into passed DICOM JSON Dict.
 
   Args:
@@ -39,8 +35,9 @@ def Insert(dicom_json: Dict[Text, Any], tag: tags.DicomTag, value: Any) -> None:
   dicom_json[tag.number] = {'vr': tag.vr, _VALUE_KEY: tag_value}
 
 
-def GetList(dicom_json: Dict[Text, Any],
-            tag: tags.DicomTag) -> Optional[List[Any]]:
+def GetList(
+    dicom_json: Dict[str, Any], tag: tags.DicomTag
+) -> Optional[List[Any]]:
   """Returns the value list for the tag from the provided DICOM JSON.
 
   Args:
@@ -57,7 +54,7 @@ def GetList(dicom_json: Dict[Text, Any],
   return dicom_json[tag.number].get(_VALUE_KEY)
 
 
-def GetValue(dicom_json: Dict[Text, Any], tag: tags.DicomTag) -> Any:
+def GetValue(dicom_json: Dict[str, Any], tag: tags.DicomTag) -> Any:
   """Returns the first value for the tag from the provided DICOM JSON.
 
   Returns the first value from the value list corresponding to the provided tag.
@@ -78,34 +75,35 @@ def GetValue(dicom_json: Dict[Text, Any], tag: tags.DicomTag) -> Any:
   return value_list[0] if value_list else None
 
 
-@attr.s
-class DicomBulkData(object):
+@dataclasses.dataclass
+class DicomBulkData:
   # URI for the bulkdata.
-  uri = attr.ib(type=Text)
+  uri: str
   # The payload.
-  data = attr.ib(type=bytes)
+  data: bytes
   # Content type in the following format:
   # https://www.w3.org/Protocols/rfc1341/4_Content-Type.html.
-  content_type = attr.ib(type=Text)
+  content_type: str
 
 
-@attr.s
-class ObjectWithBulkData(object):
+@dataclasses.dataclass
+class ObjectWithBulkData:
   """DICOM JSON object with the optional bulk data."""
-  dicom_dict = attr.ib(type=Dict[Text, Any])
-  bulkdata_list = attr.ib(type=List[DicomBulkData], factory=list)
+
+  dicom_dict: Dict[str, Any]
+  bulkdata_list: List[DicomBulkData]
 
   @property
-  def instance_uid(self) -> Text:
+  def instance_uid(self) -> str:
     """Returns the Instance UID of the DICOM Object based on the DICOM data."""
     return GetValue(self.dicom_dict, tags.SOP_INSTANCE_UID)
 
   @property
-  def series_uid(self) -> Text:
+  def series_uid(self) -> str:
     """Returns the Series UID of the DICOM Object based on the DICOM data."""
     return GetValue(self.dicom_dict, tags.SERIES_INSTANCE_UID)
 
   @property
-  def study_uid(self) -> Text:
+  def study_uid(self) -> str:
     """Returns the Study UID of the DICOM Object based on the DICOM data."""
     return GetValue(self.dicom_dict, tags.STUDY_INSTANCE_UID)
